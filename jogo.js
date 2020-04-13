@@ -34,6 +34,27 @@ const flappyBird = {
     }
 }
 
+// [Mensagem Get Ready]
+const mensagemGetReady = {
+    spriteX: 160,
+    spriteY: 8,
+    largura: 87,
+    altura: 79,
+    x: 75,
+    y: 160,
+    resizeX: 174,
+    resizeY: 158,
+    desenha() {
+        contexto.drawImage(
+            sprites, 
+            mensagemGetReady.spriteX, mensagemGetReady.spriteY,  
+            mensagemGetReady.largura, mensagemGetReady.altura, 
+            mensagemGetReady.x, mensagemGetReady.y, 
+            mensagemGetReady.resizeX, mensagemGetReady.resizeY, 
+        );
+    }
+}
+
 // [Chão]
 const chao = {
     spriteX: 0,
@@ -94,14 +115,55 @@ const planoDeFundo = {
     }
 }
 
+//
+//  [Telas]
+//
+let telaAtiva = {};
+function mudaParaTela(novaTela) {
+    telaAtiva = novaTela;
+}
+
+const Telas = {
+    INICIO: {
+        desenha() {
+            planoDeFundo.desenha();
+            chao.desenha();
+            flappyBird.desenha();
+            mensagemGetReady.desenha()
+        },
+        click(){
+            mudaParaTela(Telas.JOGO)
+        },
+        atualiza() {
+
+        }
+    }
+};
+
+Telas.JOGO = {
+    desenha() {
+        planoDeFundo.desenha();
+        chao.desenha();
+        flappyBird.desenha();
+    },
+    atualiza(){
+        flappyBird.atualiza();
+    }
+};
+
 function loop() { // Faz os quadros serem desenhados repetidamente
-    flappyBird.atualiza();
     
-    planoDeFundo.desenha();
-    chao.desenha();
-    flappyBird.desenha();
-    
+    telaAtiva.desenha();
+    telaAtiva.atualiza();
+
     requestAnimationFrame(loop);
 }
 
+window.addEventListener('click', function () {
+    if (telaAtiva.click) {
+        telaAtiva.click();
+    }
+});
+
+mudaParaTela(Telas.INICIO)
 loop();
